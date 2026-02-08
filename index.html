@@ -3,35 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?</title>
+    <title>For Harmeet ❤️</title>
     <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ff85a1;
+            --bg: #fff0f3;
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+
         body {
-            background-color: #ffebee;
+            margin: 0;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
+            background: radial-gradient(circle at center, #ffccd5, #fff0f3);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
         }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h1 { color: #d32f2f; }
-        .buttons { margin-top: 20px; position: relative; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        button { padding: 15px 30px; font-size: 1.2rem; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        #yesBtn { background-color: #4caf50; color: white; }
-        #noBtn { background-color: #f44336; color: white; position: relative; }
-        img { width: 200px; border-radius: 10px; }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 3rem;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(255, 77, 109, 0.25);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 25px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 10px 15px rgba(255, 77, 109, 0.2));
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            transition: all 0.5s ease;
+        }
+
+        /* The Special Message Style */
+        .love-message {
+            color: #c9184a;
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: none;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 120px;
+        }
+
+        button {
+            padding: 14px 32px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #yesBtn {
+            background-color: var(--primary);
+            color: white;
+            z-index: 100;
+        }
+
+        #noBtn {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--primary);
+            pointer-events: none;
+            animation: float 4s linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="mainCard">
         <img id="imageDisplay" src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Cute Bear">
         <h1 id="question">Will you be my Valentine? ❤️</h1>
+        <h1 id="finalMessage" class="love-message">I love you Harmeet my baby! 💖</h1>
         
-        <div class="buttons">
+        <div class="buttons" id="buttonGroup">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
         </div>
@@ -41,27 +129,52 @@
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const question = document.getElementById('question');
+        const finalMessage = document.getElementById('finalMessage');
         const imageDisplay = document.getElementById('imageDisplay');
+        const buttonGroup = document.getElementById('buttonGroup');
 
         let scale = 1;
+        const messages = ["Are you sure?", "Really?", "Think again!", "Pwease? 🥺", "Don't do this!", "You're mean! 😭"];
+        let msgIndex = 0;
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 30 + 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
 
         noBtn.addEventListener('mouseover', () => {
-            // Move the NO button to a random position
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            noBtn.style.position = 'absolute';
+            
+            noBtn.style.position = 'fixed';
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
 
-            // Make the YES button bigger
+            if(msgIndex < messages.length) {
+                noBtn.innerText = messages[msgIndex];
+                msgIndex++;
+            }
+
             scale += 0.5;
             yesBtn.style.transform = `scale(${scale})`;
         });
 
         yesBtn.addEventListener('click', () => {
-            question.innerHTML = "I knew you'd say yes! 🥰";
+            // UI Changes
+            question.style.display = 'none';
+            buttonGroup.style.display = 'none';
+            finalMessage.style.display = 'block';
+            
             imageDisplay.src = "https://media.tenor.com/f1V0v-pGY3oAAAAi/peach-cat-sticker-tpura-cat.gif";
-            noBtn.style.display = 'none';
+            
+            // Start heart rain
+            setInterval(createHeart, 100);
         });
     </script>
 </body>
